@@ -1,7 +1,9 @@
 import os
+from google.genai import types
+
+MAX_CHARS=10000
 
 def get_file_content(working_directory, file_path):
-    MAX_CHARS=10000
     try:
         absolute_wrdir=os.path.abspath(working_directory)
         absolute_flpth=os.path.normpath(os.path.join(absolute_wrdir, file_path))
@@ -18,3 +20,19 @@ def get_file_content(working_directory, file_path):
             return file_content_string
     except Exception as e:
         return f'Error listing files: {e}'
+
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description=f"Reads file contents in a specified directory relative to the working directory, providing the file content truncated to {MAX_CHARS} characters.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="File path of file to read contents from."
+            )
+        },
+        required=["file_path"]
+    ),
+)
